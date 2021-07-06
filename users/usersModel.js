@@ -9,6 +9,7 @@ module.exports = {
 
 //adds a user to the database
 function addUser(user) {
+  console.log(user);
   return db("users").insert(user).returning("user_id");
 }
 
