@@ -5,6 +5,7 @@ const { validateUser } = require("../users/userHelpers");
 const { signToken, validLogin } = require("./authHelpers");
 
 router.post("/register", validateUser, (req, res) => {
+  console.log("here");
   const user = req.body;
 
   const rounds = parseInt(process.env.BCRYPT_ROUNDS) || 12;
