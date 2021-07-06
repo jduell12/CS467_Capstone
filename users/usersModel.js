@@ -9,7 +9,7 @@ module.exports = {
 
 //adds a user to the database
 function addUser(user) {
-  return db("users").insert(user, "user_id");
+  return db("users").insert(user).returning("user_id");
 }
 
 //edits user with the given id
