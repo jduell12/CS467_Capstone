@@ -10,10 +10,10 @@ router.post("/register", validateUser, (req, res) => {
   const rounds = parseInt(process.env.BCRYPT_ROUNDS) || 12;
   const hash = bcryptjs.hashSync(user.password, rounds);
   user.password = hash;
-  console.log("here");
 
   Users.addUser(user)
     .then(() => {
+      console.log("here");
       const token = signToken(user);
       res.status(201).json({ message: "Welcome", token });
     })
