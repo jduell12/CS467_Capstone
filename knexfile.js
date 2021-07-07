@@ -52,7 +52,10 @@ module.exports = {
 
   production: {
     client: "pg",
-    connection: pgConnection,
+    connection: {
+      connectionString: pgConnection,
+      ssl: true,
+    },
     pool: {
       min: 2,
       max: 10,
@@ -62,9 +65,6 @@ module.exports = {
     },
     seeds: {
       directory: "./db/seeds",
-    },
-    ssl: {
-      rejectUnauthorized: false,
     },
     useNullAsDefault: true,
   },
