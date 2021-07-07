@@ -25,14 +25,14 @@ function validLogin(req, res, next) {
   if (user.username && user.password) {
     if (typeof user.username !== "string") {
       return res.status(400).json({
-        Error:
+        error:
           "The request object attributes have one or more of the wrong type",
       });
     }
 
     if (typeof user.password !== "string") {
       return res.status(400).json({
-        Error:
+        error:
           "The request object attributes have one or more of the wrong type",
       });
     }
