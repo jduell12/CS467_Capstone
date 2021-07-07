@@ -13,7 +13,6 @@ router.post("/register", validateUser, (req, res) => {
 
   Users.addUser(user)
     .then(() => {
-      console.log("here");
       const token = signToken(user);
       res.status(201).json({ message: "Welcome", token });
     })

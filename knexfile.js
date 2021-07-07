@@ -1,6 +1,7 @@
 require("dotenv").config();
 const pgConnection =
-  process.env.DATABASE_URL || "postgresql://postgres@localhost/animal_app";
+  process.env.DATABASE_URL ||
+  "postgres://uqmjbxwycxyzbs:3200598d42394f29b1050337fdcfb8dab14a1ee3b4a8699f92bbab39e7794fa1@ec2-23-23-164-251.compute-1.amazonaws.com:5432/d85rr955rte9ro";
 
 module.exports = {
   development: {
@@ -51,7 +52,7 @@ module.exports = {
     client: "pg",
     connection: {
       connectionString: pgConnection,
-      ssl: true,
+      ssl: { rejectUnauthorized: false },
     },
     pool: {
       min: 2,
