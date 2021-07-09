@@ -23,6 +23,6 @@ exports.up = function (knex) {
 
 exports.down = function (knex) {
   return knex.schema
-    .dropTableIfExists("anaimal_availability")
+    .dropTableIfExists("animal_availability")
     .dropTableIfExists("availability");
 };

@@ -11,8 +11,6 @@ exports.up = function (knex) {
     })
     .createTable("animals", (tbl) => {
       tbl.increments("animal_id");
-      tbl.string("type", 256).notNullable();
-      tbl.string("availability", 256).notNullable();
       tbl.date("date_created").notNullable();
       tbl.text("description").notNullable();
       tbl.text("news_item").notNullable();

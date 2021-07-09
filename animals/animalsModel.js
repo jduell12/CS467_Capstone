@@ -21,27 +21,10 @@ function editAnimal(animal_id, animalEdits) {
 }
 
 //returns animal object corresponding the the given filter and filter value
-// filterValue is animal_id for cases animal_id, breed and disposition
 async function getAnimalBy(filterName, filterValue) {
   switch (filterName) {
     case "animal_id":
       return db("animals").where({ animal_id: filterValue });
-    case "type":
-      return db("animals").where({ type: filterValue });
-    case "breed":
-      return db("animal_breeds")
-        .join("breeds", "breeds.breed_id", "animal_breeds.breed_id")
-        .where({ animal_id: filterValue });
-    case "disposition":
-      return db("animal_dispositions")
-        .join(
-          "dispositions",
-          "animal_dispositions.disposition_id",
-          "dispositions.disposition_id",
-        )
-        .where({ animal_id: filterValue });
-    case "availability":
-      return db("animals").where({ availability: filterValue });
     case "date":
       return db("animals").where({ date_created: filterValue });
   }
