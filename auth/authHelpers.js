@@ -17,6 +17,7 @@ function signToken(user) {
   const options = {
     expiresIn: "1h",
   };
+
   return jwt.sign(payload, secret, options);
 }
 
