@@ -354,3 +354,7 @@ describe('animalsModel', ()=>{
     })
   })
 })
+
+module.exports = {
+  getTestAnimals, getExpectedTestAnimals, asyncForEach
+}
