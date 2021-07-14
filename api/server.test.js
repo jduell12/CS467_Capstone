@@ -31,7 +31,7 @@ describe("server", () => {
     });
   });
 
-  describe("Authorization", () => {
+  describe("Authorization /auth", () => {
     describe("POST /register", () => {
       it("adds a new user to an empty db", async () => {
         const users = await db("users");
@@ -331,8 +331,8 @@ describe("server", () => {
     });
   });
 
-  describe('AnimalsRouter', ()=>{
-    describe('GET /animals', ()=>{
+  describe('AnimalsRouter /animals', ()=>{
+    describe('GET /', ()=>{
       it('gets an empty array when no animals are in database', async ()=>{
         const res = await supertest(server).post("/auth/register").send({
           username: "sam",
@@ -379,7 +379,7 @@ describe("server", () => {
       })
     })
 
-    describe('PUT /animals/:animal_id', ()=>{
+    describe('PUT /:animal_id', ()=>{
       it('edits the information of an animals based on the animal_id passed in the url', async ()=>{
         const res = await supertest(server).post("/auth/register").send({
           username: "sam",
@@ -589,7 +589,7 @@ describe("server", () => {
 
     })
 
-    describe('POST /animals', ()=>{
+    describe('POST /', ()=>{
       it('adds a new animal to the database', async ()=>{
         const res = await supertest(server).post("/auth/register").send({
           username: "sam",
@@ -824,7 +824,7 @@ describe("server", () => {
       })
     })
 
-    describe.only('/GET /animals/:filter_name/:filter_value', ()=>{
+    describe('GET /:filter_name/:filter_value', ()=>{
       it('gets animal by animal_id', async ()=>{
         const res = await supertest(server).post("/auth/register").send({
           username: "sam",
@@ -908,6 +908,104 @@ describe("server", () => {
         expect((res2.body.animalArr).length).toBe(0);
         expect(res2.body.animalArr).toEqual([]);
 
+      })
+    })
+
+    describe('DELETE /animal_id', ()=>{
+      it('deletes animal from database', async ()=>{
+        const res = await supertest(server).post("/auth/register").send({
+          username: "sam",
+          password: "pass",
+          first_name: "Sam",
+          last_name: "Gamgee",
+          email: "baggins@gmail.com",
+          admin: false,
+        });
+        const token = res.body.token;
+
+        const testAnimals = await getTestAnimals();
+        await asyncForEach(testAnimals, async (animal) => {
+          await db('animals').insert(animal)
+        })
+
+        const res2 = await supertest(server).del("/animals/1").set('authorization', token)
+
+        const dbAnmials = await db('animals');
+        expect(dbAnmials.length).toBe(3)
+      })
+
+      it('sends 200 when successfully deletes animal from database', async ()=>{
+        const res = await supertest(server).post("/auth/register").send({
+          username: "sam",
+          password: "pass",
+          first_name: "Sam",
+          last_name: "Gamgee",
+          email: "baggins@gmail.com",
+          admin: false,
+        });
+        const token = res.body.token;
+
+        const testAnimals = await getTestAnimals();
+        await asyncForEach(testAnimals, async (animal) => {
+          await db('animals').insert(animal)
+        })
+
+        const res2 = await supertest(server).del("/animals/1").set('authorization', token)
+
+        expect(res2.status).toBe(200);
+      })
+
+      it('sends success message after successfully deletes animal from database', async ()=>{
+        const res = await supertest(server).post("/auth/register").send({
+          username: "sam",
+          password: "pass",
+          first_name: "Sam",
+          last_name: "Gamgee",
+          email: "baggins@gmail.com",
+          admin: false,
+        });
+        const token = res.body.token;
+
+        const testAnimals = await getTestAnimals();
+        await asyncForEach(testAnimals, async (animal) => {
+          await db('animals').insert(animal)
+        })
+
+        const res2 = await supertest(server).del("/animals/1").set('authorization', token)
+
+        expect(res2.body.message).toEqual("1 deleted successfully");
+      })
+
+      it('sends 404 when trying to delete animal with an animal_id not in the database', async ()=>{
+        const res = await supertest(server).post("/auth/register").send({
+          username: "sam",
+          password: "pass",
+          first_name: "Sam",
+          last_name: "Gamgee",
+          email: "baggins@gmail.com",
+          admin: false,
+        });
+        const token = res.body.token;
+
+        const res2 = await supertest(server).del("/animals/1").set('authorization', token)
+
+        expect(res2.status).toBe(404);
+      })
+
+      it('sends error message when trying to delete animal with an animal_id not in the database', async ()=>{
+        const res = await supertest(server).post("/auth/register").send({
+          username: "sam",
+          password: "pass",
+          first_name: "Sam",
+          last_name: "Gamgee",
+          email: "baggins@gmail.com",
+          admin: false,
+        });
+        const token = res.body.token;
+
+        const res2 = await supertest(server).del("/animals/1").set('authorization', token)
+
+        expect(res2.body.message).toEqual('No animal with that id was found');
       })
     })
   })
