@@ -5,25 +5,24 @@ module.exports = {
 
 function validateAnimal(req, res, next) {
     let animal = req.body;
-
     if (
         animal.description &&
         animal.news_item &&
-        animal.pic
+        animal.pic 
     ) {
-        if (!animal.date || !(animal.date instanceof Date)) {
-            animal.date = new Date();
+        if(!animal.date_created){
+            animal.date_created = new Date();
         }
 
         if (
             typeof animal.description !== 'string'
             || typeof animal.news_item !== 'string'
-            || typeof animal.pic !== 'string'
+            || typeof animal.pic !== 'string' || (typeof animal.date_created !== 'string' && !(animal.date_created instanceof Date))
         ) {
             return res.status(400).json({
                 error:
                     "The request object attributes have one or more of the wrong type",
-                stack: "Animal helpers line 25",
+                stack: "Animal helpers line 36",
             });
         } else {
             next();
@@ -31,7 +30,7 @@ function validateAnimal(req, res, next) {
     } else {
         return res.status(400).json({
             error: 'The request object is missing one or more required attributes',
-            stack: "Animal helpers line 33"
+            stack: "Animal helpers line 44"
         })
     }
 }
@@ -52,7 +51,7 @@ function validateAnimalEdit(req, res, next) {
             return res.status(400).json({
                 error:
                     "The request object attributes have one or more of the wrong type",
-                stack: "Animal helpers line 55",
+                stack: "Animal helpers line 65",
             });
         } else {
             next();
@@ -60,7 +59,7 @@ function validateAnimalEdit(req, res, next) {
     } else {
         return res.status(400).json({
             error: 'The request object is missing one or more required attributes',
-            stack: "Animal helpers line 63"
+            stack: "Animal helpers line 73"
         })
     }
 }
