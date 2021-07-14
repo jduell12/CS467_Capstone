@@ -379,7 +379,7 @@ describe("server", () => {
       })
     })
 
-    describe.only('PUT /animals/:animal_id', ()=>{
+    describe('PUT /animals/:animal_id', ()=>{
       it('edits the information of an animals based on the animal_id passed in the url', async ()=>{
         const res = await supertest(server).post("/auth/register").send({
           username: "sam",
@@ -406,8 +406,6 @@ describe("server", () => {
           description: newDes
         })
 
-        expect(res2.body.message).toBe("Edited 1 animal(s) successfully")
-
         const dbAnmials = await db('animals');
         for(let i = 0; i < dbAnmials.length; i++){
           if(dbAnmials[i].animal_id === expectedAnimal.animal_id){
@@ -418,6 +416,177 @@ describe("server", () => {
         
 
       })
+
+      it('sends 200 OK when successfully edits an animal', async ()=>{
+        const res = await supertest(server).post("/auth/register").send({
+          username: "sam",
+          password: "pass",
+          first_name: "Sam",
+          last_name: "Gamgee",
+          email: "baggins@gmail.com",
+          admin: false,
+        });
+        const token = res.body.token;
+
+        const testAnimals = await getTestAnimals();
+        await asyncForEach(testAnimals, async (animal) => {
+          await db('animals').insert(animal)
+        })
+
+        const expectedAnimals = await getExpectedTestAnimals();
+        let expectedAnimal = expectedAnimals[0]
+
+        const newDes = 'A wonderful dog to have in the family.'
+        expectedAnimal.description = newDes;
+
+        const res2 = await supertest(server).put("/animals/1").set('authorization', token).send({
+          description: newDes
+        })
+
+        expect(res2.status).toBe(200);
+      })
+
+      it('sends a success message after succesful edit', async ()=>{
+        const res = await supertest(server).post("/auth/register").send({
+          username: "sam",
+          password: "pass",
+          first_name: "Sam",
+          last_name: "Gamgee",
+          email: "baggins@gmail.com",
+          admin: false,
+        });
+        const token = res.body.token;
+
+        const testAnimals = await getTestAnimals();
+        await asyncForEach(testAnimals, async (animal) => {
+          await db('animals').insert(animal)
+        })
+
+        const expectedAnimals = await getExpectedTestAnimals();
+        let expectedAnimal = expectedAnimals[0]
+
+        const newDes = 'A wonderful dog to have in the family.'
+        expectedAnimal.description = newDes;
+
+        const res2 = await supertest(server).put("/animals/1").set('authorization', token).send({
+          description: newDes
+        })
+
+        expect(res2.body.message).toBe("Edited 1 animal(s) successfully")
+      })
+
+      it('sends error message when no body is sent', async ()=>{
+        const res = await supertest(server).post("/auth/register").send({
+          username: "sam",
+          password: "pass",
+          first_name: "Sam",
+          last_name: "Gamgee",
+          email: "baggins@gmail.com",
+          admin: false,
+        });
+        const token = res.body.token;
+
+        const testAnimals = await getTestAnimals();
+        await asyncForEach(testAnimals, async (animal) => {
+          await db('animals').insert(animal)
+        })
+
+        const expectedAnimals = await getExpectedTestAnimals();
+        let expectedAnimal = expectedAnimals[0]
+
+        const res2 = await supertest(server).put("/animals/1").set('authorization', token).send({})
+
+        expect(res2.body.error).toBe("The request object is missing one or more required attributes")
+      })
+
+      it('sends error message when body is sent with wrong data type', async ()=>{
+        const res = await supertest(server).post("/auth/register").send({
+          username: "sam",
+          password: "pass",
+          first_name: "Sam",
+          last_name: "Gamgee",
+          email: "baggins@gmail.com",
+          admin: false,
+        });
+        const token = res.body.token;
+
+        const testAnimals = await getTestAnimals();
+        await asyncForEach(testAnimals, async (animal) => {
+          await db('animals').insert(animal)
+        })
+
+        const expectedAnimals = await getExpectedTestAnimals();
+        let expectedAnimal = expectedAnimals[0]
+
+        const res2 = await supertest(server).put("/animals/1").set('authorization', token).send({
+          description: 123
+        })
+
+        expect(res2.body.error).toBe("The request object attributes have one or more of the wrong type")
+
+        const res3 = await supertest(server).put("/animals/1").set('authorization', token).send({
+          news_item: 123
+        })
+
+        expect(res3.body.error).toBe("The request object attributes have one or more of the wrong type")
+
+        const res4 = await supertest(server).put("/animals/1").set('authorization', token).send({
+          pic: 123
+        })
+
+        expect(res4.body.error).toBe("The request object attributes have one or more of the wrong type")
+
+        const res5 = await supertest(server).put("/animals/1").set('authorization', token).send({
+          date: 123
+        })
+
+        expect(res5.body.error).toBe("The request object attributes have one or more of the wrong type")
+      })
+
+      it('sends status code 400 when body is sent with wrong data type', async ()=>{
+        const res = await supertest(server).post("/auth/register").send({
+          username: "sam",
+          password: "pass",
+          first_name: "Sam",
+          last_name: "Gamgee",
+          email: "baggins@gmail.com",
+          admin: false,
+        });
+        const token = res.body.token;
+
+        const testAnimals = await getTestAnimals();
+        await asyncForEach(testAnimals, async (animal) => {
+          await db('animals').insert(animal)
+        })
+
+        const expectedAnimals = await getExpectedTestAnimals();
+        let expectedAnimal = expectedAnimals[0]
+
+        const res2 = await supertest(server).put("/animals/1").set('authorization', token).send({
+          description: 123
+        })
+
+        expect(res2.status).toBe(400)
+
+        const res3 = await supertest(server).put("/animals/1").set('authorization', token).send({
+          news_item: 123
+        })
+
+        expect(res3.status).toBe(400)
+
+        const res4 = await supertest(server).put("/animals/1").set('authorization', token).send({
+          pic: 123
+        })
+
+        expect(res4.status).toBe(400)
+
+        const res5 = await supertest(server).put("/animals/1").set('authorization', token).send({
+          date: 123
+        })
+
+        expect(res5.status).toBe(400)
+      })
+
     })
   })
 });
