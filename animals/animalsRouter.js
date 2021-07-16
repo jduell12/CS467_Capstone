@@ -5,6 +5,9 @@ const atob = require('atob')
 
 router.get('/', (req, res) =>{
     Animals.getAllAnimals().then(animals => {
+        animals.forEach(animal => {
+            animal.pic = atob(animal.pic)
+        })
         res.status(200).json({animals})
     }).catch(err => {
         res.status(500).json({
