@@ -13,7 +13,7 @@ function validateAnimal(req, res, next) {
         if(!animal.date_created){
             animal.date_created = new Date();
         }
-
+        
         if (
             typeof animal.description !== 'string'
             || typeof animal.news_item !== 'string'

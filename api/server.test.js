@@ -1,9 +1,8 @@
 const supertest = require("supertest");
 const server = require("./server");
 const db = require("../db/dbconfig");
-const fs = require('fs');
-const atob = require('atob')
 const {getTestAnimals, getExpectedTestAnimals, asyncForEach} = require('../animals/animalsModel.test')
+const atob = require('atob')
 
 describe("server", () => {
   //wipes all tables in database clean so each test starts with empty tables
@@ -664,7 +663,7 @@ describe("server", () => {
           first_name: "Sam",
           last_name: "Gamgee",
           email: "baggins@gmail.com",
-          admin: false,
+          admin: true,
         });
         const token = res.body.token;
 
@@ -682,7 +681,6 @@ describe("server", () => {
         delete testAnimal.animal_id
 
         const res2 = await supertest(server).post("/animals").set('authorization', token).send(testAnimal)
-
         expect(res2.body.animal).toBe(4)
       })
 
@@ -791,7 +789,7 @@ describe("server", () => {
           first_name: "Sam",
           last_name: "Gamgee",
           email: "baggins@gmail.com",
-          admin: false,
+          admin: true,
         });
         const token = res.body.token;
 
@@ -849,7 +847,6 @@ describe("server", () => {
         expect((res2.body.animalArr).length).toBe(1);
 
         let animal = res2.body.animalArr[0]
-        animal.pic = atob(animal.pic)
 
         expect(animal.pic).toEqual(expectedAnimals[0].pic)
         expect(animal.description).toEqual(expectedAnimals[0].description)
@@ -880,7 +877,6 @@ describe("server", () => {
         expect((res2.body.animalArr).length).toBe(1);
 
         let animal = res2.body.animalArr[0]
-        animal.pic = atob(animal.pic)
 
         expect(animal.pic).toEqual(expectedAnimals[0].pic)
         expect(animal.description).toEqual(expectedAnimals[0].description)

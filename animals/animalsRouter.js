@@ -65,15 +65,12 @@ router.put('/:animal_id', helpers.validateAnimalEdit, (req, res) =>{
 
 router.post('/', helpers.validateAnimal, (req,res) =>{
     Animals.addAnimal(req.body).then(animalArr => {
-        animalArr.forEach(animal => {
-            animal.pic = atob(animal.pic)
-        })
         res.status(201).json({animal: animalArr[0]})
     }).catch(err => {
         res.status(500).json({
             error: err.message,
-            errorMessage: "Could not add adnimal to database",
-            stack: "Animals Router line 67"
+            errorMessage: "Could not add animal to database",
+            stack: "Animals Router line 76"
         })
     })
 })
