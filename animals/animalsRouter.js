@@ -22,6 +22,9 @@ router.get('/:filter_name/:filter_value', (req, res) => {
     let filter = req.params.filter_name;
     let value = req.params.filter_value;
     Animals.getAnimalBy(filter, value).then(animalArr => {
+        animalArr.forEach(animal => {
+            animal.pic = atob(animal.pic)
+        })
         res.status(200).json({animalArr})
     }).catch(err => {
         res.status(500).json({
@@ -62,6 +65,9 @@ router.put('/:animal_id', helpers.validateAnimalEdit, (req, res) =>{
 
 router.post('/', helpers.validateAnimal, (req,res) =>{
     Animals.addAnimal(req.body).then(animalArr => {
+        animalArr.forEach(animal => {
+            animal.pic = atob(animal.pic)
+        })
         res.status(201).json({animal: animalArr[0]})
     }).catch(err => {
         res.status(500).json({
