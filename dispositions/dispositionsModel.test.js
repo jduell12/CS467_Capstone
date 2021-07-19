@@ -2,7 +2,46 @@ const db = require('../db/dbconfig');
 const Dispositions = require('./dispositionsModel');
 const constants = require("../animals/testConstants");
 const fs = require('fs')
-const {getTestAnimals, asyncForEach} = require('../animals/animalsModel.test')
+const {asyncForEach} = require('../animals/animalsModel.test')
+
+//sample animals to be used in tests
+async function getTestAnimals() {
+    let buff = fs.readFileSync('animals/collie.jpeg');
+    const pic1 = buff.toString('base64');
+    ;
+    const animal1 = {
+      pic: pic1,
+      date_created: "06-20-2021",
+      description:
+        "A very good dog. Wonderful with children and other animals. Looking for his forever home.",
+      news_item: constants.news1,
+    };
+  
+    const animal2 = {
+      pic: pic1,
+      date_created: "01-01-2020",
+      description: "A very good cat. Wonderful with other animals. Watch when around children",
+      news_item: constants.news1,
+    };
+  
+    const animal3 = {
+      pic: pic1,
+      date_created: "01-01-2019",
+      description: "A very good bird. Good around other birds only",
+      news_item: constants.news1,
+    }
+  
+    const animal4 = {
+      pic: pic1,
+      date_created: "06-20-2018",
+      description:
+        "A very good dog. Wonderful with children and other animals.",
+      news_item: constants.news1,
+    }
+  
+    return [animal1, animal2, animal3, animal4]
+  }
+
 
 //sample dispositions to be used in tests 
 async function getDispositions(){
@@ -22,7 +61,6 @@ describe('dispositionsModel', ()=>{
     await db.raw("TRUNCATE TABLE users RESTART IDENTITY CASCADE");
     await db.raw("TRUNCATE TABLE user_animals RESTART IDENTITY CASCADE");
     await db.raw("TRUNCATE TABLE dispositions RESTART IDENTITY CASCADE");
-    await db.raw("TRUNCATE TABLE animal_dispositions RESTART IDENTITY CASCADE");
     await db.raw("TRUNCATE TABLE breeds RESTART IDENTITY CASCADE");
     await db.raw("TRUNCATE TABLE animal_breeds RESTART IDENTITY CASCADE");
 
@@ -126,6 +164,39 @@ describe('dispositionsModel', ()=>{
 
             res = await Dispositions.getAnimalByDispositionId(3)
             expect(res.length).toBe(0);
+
+        })
+    })
+
+    describe.only('getAnimalDispositions(animal_id)', ()=>{
+        it('returns a list of dispositions that an animal has based on animal_id', async ()=>{
+            const disList = await getDispositions();
+            const animalList = await getTestAnimals();
+            await asyncForEach(disList, async (dispo) =>{
+                await db('dispositions').insert({disposition: dispo});
+            })
+            let index = 1
+            await asyncForEach(animalList, async (animal) =>{
+                await db('animals').insert(animal);
+                await db('animal_dispositions').insert({animal_id: index, disposition_id: 1})
+                index++;
+            })
+            await db('animal_dispositions').insert({animal_id: 1, disposition_id: 2})
+
+            let dispositions = await db('dispositions');
+            expect(dispositions.length).toBe(3);
+            let animals = await db('animals')
+            expect(animals.length).toBe(4)
+            let animal_dispositions = await db('animal_dispositions')
+            expect(animal_dispositions.length).toBe(5);
+
+            const res = await Dispositions.getAnimalDispositions(1)
+            expect(res.length).toBe(2);
+
+            res.forEach((obj, i) => {
+                expect(obj.disposition).toEqual(disList[i])
+            })
+            
 
         })
     })

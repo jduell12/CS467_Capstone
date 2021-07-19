@@ -1,5 +1,6 @@
 const db = require("../db/dbconfig");
 const Animals = require("./animalsModel");
+const Dispositions = require('../dispositions/dispositionsModel')
 const constants = require("./testConstants");
 const fs = require('fs')
 const atob = require('atob')
@@ -15,7 +16,7 @@ async function getTestAnimals() {
     description:
       "A very good dog. Wonderful with children and other animals. Looking for his forever home.",
     news_item: constants.news1,
-    disposition: ['Good with other Animals', 'Good with children']
+    disposition: ['Good with other animals', 'Good with children']
   };
 
   const animal2 = {
@@ -23,7 +24,7 @@ async function getTestAnimals() {
     date_created: "01-01-2020",
     description: "A very good cat. Wonderful with other animals. Watch when around children",
     news_item: constants.news1,
-    disposition: ['Good with other Animals', 'Animal must be leashed at all times']
+    disposition: ['Good with other animals', 'Animal must be leashed at all times']
   };
 
   const animal3 = {
@@ -40,7 +41,7 @@ async function getTestAnimals() {
     description:
       "A very good dog. Wonderful with children and other animals.",
     news_item: constants.news1,
-    disposition: ['Good with other Animals', 'Good with children', 'Animal must be leashed at all times']
+    disposition: ['Good with other animals', 'Good with children', 'Animal must be leashed at all times']
   }
 
   return [animal1, animal2, animal3, animal4]
@@ -57,14 +58,14 @@ async function getExpectedTestAnimals() {
         "A very good dog. Wonderful with children and other animals. Looking for his forever home.",
       news_item: constants.news1,
       animal_id: 1,
-      disposition: ['Good with other Animals', 'Good with children']
+      disposition: ['Good with other animals', 'Good with children']
     }, {
       pic: pic1,
       date_created: new Date('01-01-2020'),
       description: "A very good cat. Wonderful with other animals. Watch when around children",
       news_item: constants.news1,
       animal_id: 2,
-      disposition: ['Good with other Animals', 'Animal must be leashed at all times']
+      disposition: ['Good with other animals', 'Animal must be leashed at all times']
     }, {
       pic: pic1,
       date_created: new Date('01-01-2019'),
@@ -79,7 +80,7 @@ async function getExpectedTestAnimals() {
       "A very good dog. Wonderful with children and other animals.",
       news_item: constants.news1,
       animal_id: 4,
-      disposition: ['Good with other Animals', 'Good with children', 'Animal must be leashed at all times']
+      disposition: ['Good with other animals', 'Good with children', 'Animal must be leashed at all times']
     }
   ]
 }
@@ -99,7 +100,6 @@ describe('animalsModel', ()=>{
     await db.raw("TRUNCATE TABLE animals RESTART IDENTITY CASCADE");
     await db.raw("TRUNCATE TABLE users RESTART IDENTITY CASCADE");
     await db.raw("TRUNCATE TABLE user_animals RESTART IDENTITY CASCADE");
-    await db.raw("TRUNCATE TABLE dispositions RESTART IDENTITY CASCADE");
     await db.raw("TRUNCATE TABLE animal_dispositions RESTART IDENTITY CASCADE");
     await db.raw("TRUNCATE TABLE breeds RESTART IDENTITY CASCADE");
     await db.raw("TRUNCATE TABLE animal_breeds RESTART IDENTITY CASCADE");
@@ -111,11 +111,15 @@ describe('animalsModel', ()=>{
     it('adds an animal to an empty db', async ()=>{
       let animalList = await getTestAnimals();
       let dbTestAnimals = await getExpectedTestAnimals();
+      let animal = animalList[0]
+      let animal_id = await Animals.addAnimal(animal)
+      animal_id = animal_id[0]
 
-      await Animals.addAnimal(animalList[0])
-
-      const animals = await db('animals');
+      const animals = await db('animals as a')
+      let animal_db = animals[0];
+      // const animal_dis = await Dispositions.
       const shouldGet = [dbTestAnimals[0]];
+      console.log(animals);
 
       //converts the binary array to a base64string
       animals[0].pic = atob(animals[0].pic);
