@@ -60,7 +60,6 @@ describe('dispositionsModel', ()=>{
     await db.raw("TRUNCATE TABLE animals RESTART IDENTITY CASCADE");
     await db.raw("TRUNCATE TABLE users RESTART IDENTITY CASCADE");
     await db.raw("TRUNCATE TABLE user_animals RESTART IDENTITY CASCADE");
-    await db.raw("TRUNCATE TABLE dispositions RESTART IDENTITY CASCADE");
     await db.raw("TRUNCATE TABLE breeds RESTART IDENTITY CASCADE");
     await db.raw("TRUNCATE TABLE animal_breeds RESTART IDENTITY CASCADE");
 
@@ -168,7 +167,7 @@ describe('dispositionsModel', ()=>{
         })
     })
 
-    describe.only('getAnimalDispositions(animal_id)', ()=>{
+    describe('getAnimalDispositions(animal_id)', ()=>{
         it('returns a list of dispositions that an animal has based on animal_id', async ()=>{
             const disList = await getDispositions();
             const animalList = await getTestAnimals();
@@ -268,9 +267,9 @@ describe('dispositionsModel', ()=>{
             let animal_dispositions = await db('animal_dispositions')
             expect(animal_dispositions.length).toBe(5);
 
-            const count = await Dispositions.deleteAnimalDiposition(2, 1)
+            const count = await Dispositions.deleteAnimalDiposition(1)
             animal_dispositions = await db('animal_dispositions')
-            expect(animal_dispositions.length).toBe(4);
+            expect(animal_dispositions.length).toBe(3);
             animal_dispositions.forEach(ad => {
                 expect(ad.disposition_id).not.toEqual(2)
             })
@@ -278,11 +277,11 @@ describe('dispositionsModel', ()=>{
             expect(dispositions.length).toBe(3);
             animals = await db('animals')
             expect(animals.length).toBe(4)
-            expect(count).toBe(1);
+            expect(count).toBe(2);
         })
 
-        it('returns 0 when trying to remove a disposition not on an animal', async ()=>{
-            const count = await Dispositions.deleteAnimalDiposition(1, 1);
+        it('returns 0 when trying to remove a disposition not on an animal in the database', async ()=>{
+            const count = await Dispositions.deleteAnimalDiposition(5);
             expect(count).toBe(0);
         })
     })
