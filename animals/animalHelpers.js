@@ -8,16 +8,16 @@ function validateAnimal(req, res, next) {
     if (
         animal.description &&
         animal.news_item &&
-        animal.pic 
+        animal.pic &&
+        animal.disposition
     ) {
         if(!animal.date_created){
             animal.date_created = new Date();
         }
-
         if (
             typeof animal.description !== 'string'
             || typeof animal.news_item !== 'string'
-            || typeof animal.pic !== 'string' || (typeof animal.date_created !== 'string' && !(animal.date_created instanceof Date))
+            || typeof animal.pic !== 'string' || (typeof animal.date_created !== 'string' && !(animal.date_created instanceof Date)) || typeof animal.disposition !== 'object'
         ) {
             return res.status(400).json({
                 error:
