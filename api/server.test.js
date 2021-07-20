@@ -12,9 +12,16 @@ describe("server", () => {
     await db.raw("TRUNCATE TABLE animals RESTART IDENTITY CASCADE");
     await db.raw("TRUNCATE TABLE users RESTART IDENTITY CASCADE");
     await db.raw("TRUNCATE TABLE user_animals RESTART IDENTITY CASCADE");
+    await db.raw("TRUNCATE TABLE dispositions RESTART IDENTITY CASCADE");
     await db.raw("TRUNCATE TABLE animal_dispositions RESTART IDENTITY CASCADE");
     await db.raw("TRUNCATE TABLE breeds RESTART IDENTITY CASCADE");
     await db.raw("TRUNCATE TABLE animal_breeds RESTART IDENTITY CASCADE");
+
+    let disList = ["Good with children", "Good with other animals", "Animal must be leashed at all times"]
+
+    await asyncForEach(disList, async (dis) =>{
+        await db('dispositions').insert({disposition: dis})
+    })
   });
 
   describe("GET /", () => {
@@ -991,7 +998,7 @@ describe("server", () => {
       })
     })
 
-    describe.only('GET /:filter_name/:filter_value', ()=>{
+    describe('GET /:filter_name/:filter_value', ()=>{
       it('gets animal by animal_id', async ()=>{
         const res = await supertest(server).post("/auth/register").send({
           username: "sam",
@@ -1005,11 +1012,12 @@ describe("server", () => {
 
         const animalList = await getTestAnimals();
         await asyncForEach(animalList, async (animal) => {
+          delete animal.disposition
           await db('animals').insert(animal)
         })
+        await insertAnimalDispositions();
 
         const expectedAnimals = await getExpectedTestAnimals();
-
 
         const res2 = await supertest(server).get("/animals/animal_id/1").set('authorization', token)
 
@@ -1019,6 +1027,7 @@ describe("server", () => {
 
         expect(animal.pic).toEqual(expectedAnimals[0].pic)
         expect(animal.description).toEqual(expectedAnimals[0].description)
+        expect(animal.disposition).toEqual(expectedAnimals[0].disposition)
 
       })
 
@@ -1035,11 +1044,13 @@ describe("server", () => {
 
         const animalList = await getTestAnimals();
         await asyncForEach(animalList, async (animal) => {
+          delete animal.disposition
           await db('animals').insert(animal)
         })
 
-        const expectedAnimals = await getExpectedTestAnimals();
+        await insertAnimalDispositions();
 
+        const expectedAnimals = await getExpectedTestAnimals();
 
         const res2 = await supertest(server).get("/animals/date/06-20-2021").set('authorization', token)
 
@@ -1049,6 +1060,7 @@ describe("server", () => {
 
         expect(animal.pic).toEqual(expectedAnimals[0].pic)
         expect(animal.description).toEqual(expectedAnimals[0].description)
+        expect(animal.disposition).toEqual(expectedAnimals[0].disposition)
 
       })
 
@@ -1065,14 +1077,16 @@ describe("server", () => {
 
         const animalList = await getTestAnimals();
         await asyncForEach(animalList, async (animal) => {
+          delete animal.disposition
           await db('animals').insert(animal)
         })
+
+        await insertAnimalDispositions();
 
         const res2 = await supertest(server).get("/animals/something/else").set('authorization', token)
 
         expect((res2.body.animalArr).length).toBe(0);
         expect(res2.body.animalArr).toEqual([]);
-
       })
     })
 
@@ -1090,13 +1104,23 @@ describe("server", () => {
 
         const testAnimals = await getTestAnimals();
         await asyncForEach(testAnimals, async (animal) => {
+          delete animal.disposition
           await db('animals').insert(animal)
         })
+
+        await insertAnimalDispositions();
 
         const res2 = await supertest(server).del("/animals/1").set('authorization', token)
 
         const dbAnmials = await db('animals');
         expect(dbAnmials.length).toBe(3)
+
+        const dbDis = await db('animal_dispositions').where('animal_id', 1);
+        expect(dbDis.length).toBe(0);
+        expect(dbDis).toEqual([]);
+
+        const dbAnimalDis = await db('animal_dispositions');
+        expect(dbAnimalDis.length).toBe(5);
       })
 
       it('sends 200 when successfully deletes animal from database', async ()=>{
@@ -1112,8 +1136,11 @@ describe("server", () => {
 
         const testAnimals = await getTestAnimals();
         await asyncForEach(testAnimals, async (animal) => {
+          delete animal.disposition
           await db('animals').insert(animal)
         })
+
+        await insertAnimalDispositions();
 
         const res2 = await supertest(server).del("/animals/1").set('authorization', token)
 
@@ -1133,8 +1160,11 @@ describe("server", () => {
 
         const testAnimals = await getTestAnimals();
         await asyncForEach(testAnimals, async (animal) => {
+          delete animal.disposition
           await db('animals').insert(animal)
         })
+
+        await insertAnimalDispositions();
 
         const res2 = await supertest(server).del("/animals/1").set('authorization', token)
 
