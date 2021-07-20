@@ -44,7 +44,7 @@ async function getTestAnimals() {
 
 
 //sample dispositions to be used in tests 
-async function getDispositions(){
+ async function getDispositions(){
     const disposition1 = "Good with other animals";
     const disposition2 = "Good with children";
     const disposition3 = "Animal must be leashed at all times";

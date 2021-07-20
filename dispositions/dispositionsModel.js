@@ -4,6 +4,7 @@ module.exports = {
     addDisposition,
     addAnimalDisposition,
     editDisposition,
+    editAnimalDispositions,
     getAnimalByDispositionId,
     getAnimalDispositions,
     getDispositionId,
@@ -24,6 +25,15 @@ function addAnimalDisposition(animal_id, disposition_id) {
 //edits a disposition
 function editDisposition(disposition_id, disposition) {
     return db('dispositions').where({ disposition_id }).update(disposition).then(count => count)
+}
+
+//edits an animals dispositions
+async function editAnimalDispositions(editObj){
+    const {animal_id, disposition_id, disposition} = editObj;
+
+    await db('animal_dispositions').del().where({animal_id: parseInt(animal_id), disposition_id: parseInt(disposition_id)})
+    let dis_id = await getDispositionId(disposition);
+    return db('animal_dispositions').insert({animal_id: parseInt(animal_id), disposition_id: dis_id}, 'animal_dis_id')
 }
 
 //returns list of animal ids based on a particular disposition

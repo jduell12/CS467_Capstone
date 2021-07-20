@@ -456,5 +456,5 @@ describe('animalsModel', ()=>{
 })
 
 module.exports = {
-  getTestAnimals, getExpectedTestAnimals, asyncForEach
+  getTestAnimals, getExpectedTestAnimals, asyncForEach, insertAnimalDispositions
 }

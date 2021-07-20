@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const Animals = require('./animalsModel');
+const Dispositions = require('../dispositions/dispositionsModel')
 const helpers = require('./animalHelpers');
 const atob = require('atob')
 
@@ -35,11 +36,56 @@ router.get('/:filter_name/:filter_value', (req, res) => {
     })
 })
 
+//Edits animal's dispositions
+router.put('/:animal_id/disposition/:disposition_id', async (req, res) =>{
+    let disposition = req.body.disposition;
+   
+    if(disposition ){
+        if(typeof disposition === 'string'){
+            let editObj = {
+                animal_id: req.params.animal_id,
+                disposition_id: req.params.disposition_id,
+                disposition
+            }
+            Dispositions.editAnimalDispositions(editObj).then(count => { 
+                 res.status(204).end()
+            }).catch(err => {
+                 res.status(500).json({
+                     error: err.message, 
+                     errorMessage: "Could not edit animal disposition",
+                     stack: "Animals Router line 55"
+                 })
+            })
+        }else {
+            res.status(400).json({
+                error:
+                    "The request object attributes have one or more of the wrong type",
+                stack: "Animal router line 63",
+            });
+        }
+    }else {
+        res.status(400).json({
+            error:
+                "The request object is missing one or more required attributes",
+            stack: "Animal router line 70",
+        });
+    }
+})
+
+//Edits animal base attributes: 
+// pic, date_created, description, news_item
 router.put('/:animal_id', helpers.validateAnimalEdit, (req, res) =>{
+    let animal_edits = req.body
+
     Animals.getAnimalBy('animal_id', req.params.animal_id).then(animalArr => {
         let animal = animalArr[0]
         if(animal){
-            Animals.editAnimal(req.params.animal_id, req.body).then(count => {
+            if(animal_edits.disposition){
+                //edit animal dispositions
+                delete animal_edits.disposition
+            }
+
+            Animals.editAnimal(req.params.animal_id, animal_edits).then(count => {
                 res.status(200).json({message: `Edited ${count} animal(s) successfully`})
             }).catch(err => {
                 res.status(500).json({
@@ -63,8 +109,11 @@ router.put('/:animal_id', helpers.validateAnimalEdit, (req, res) =>{
     })
 })
 
+
 router.post('/', helpers.validateAnimal, (req,res) =>{
-    Animals.addAnimal(req.body).then(animalArr => {
+    let animal = req.body 
+
+    Animals.addAnimal(animal).then(animalArr => {
         res.status(201).json({animal: animalArr[0]})
     }).catch(err => {
         res.status(500).json({
