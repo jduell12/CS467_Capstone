@@ -76,6 +76,6 @@ async function getAnimalBy(filterName, filterValue) {
 
 //removes aniaml with given id from database
 async function deleteAnimal(animal_id) {
-  await Dispositions.deleteAnimalDiposition(animal_id)
+  await Dispositions.deleteAnimalDipositions(animal_id)
   return db("animals").del().where({ animal_id });
 }
