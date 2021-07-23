@@ -1,3 +1,5 @@
+const bcryptjs = require("bcryptjs");
+
 module.exports = {
   validateUser,
   validateUserEdit,
@@ -92,6 +94,9 @@ function validateUserEdit(req, res, next) {
             "The request object attributes have one or more of the wrong type",
         });
       }
+      const rounds = parseInt(process.env.BCRYPT_ROUNDS) || 12;
+      const hash = bcryptjs.hashSync(user.password, rounds);
+      user.password = hash;
     }
 
     if (user.first_name) {
@@ -120,7 +125,7 @@ function validateUserEdit(req, res, next) {
         });
       }
     }
-
+    req.body = user;
     next();
   } else {
     return res.status(400).json({
