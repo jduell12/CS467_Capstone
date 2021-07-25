@@ -40,6 +40,20 @@ router.get('/:filter_name/:filter_value', (req, res) => {
     })
 })
 
+router.get('/:key', (req, res) =>{
+    let key = req.params.key;
+
+    Animals.getAnimalAttribute(key).then(attributeArr => {
+        res.status(200).json({attributeArr})
+    }).catch(err => {
+        res.status(500).json({
+            error: err.message,
+            errorMessage: 'Can not  get the attribute list from the database',
+            stack: 'Animal router line 52'
+        })
+    })
+})
+
 //Edits animal attributes
 router.put('/:animal_id', helpers.validateAnimalEdit, (req, res) => {
     let animal_edits = req.body
