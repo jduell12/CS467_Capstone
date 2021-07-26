@@ -20,7 +20,7 @@ The database is composed of 11 tables:
 The database is set up as a PostgreSQL and hosted on [Heroku] (https://bring-me-home-backend.herokuapp.com/)
 
 ## Endpoints 
-For more detailed documentation: ()
+For more detailed documentation: [Documentation](https://docs.google.com/document/d/1Qrlb6e5z1lbmc-2CgQSuipUSgBGWAhgu7mFuyRO1vh8/edit?usp=sharing)
 
 | TYPE | URL | What it does | Required in Body | Required in Headers |
 |-----| -----|------------ | ---------------- | ------------------- |
@@ -58,7 +58,7 @@ All changes made to an animal object (put, post, or del) must be done by an admi
 3. In the terminal type `npm i` in order to download all needed dependencies
 4. In the terminal type `npm run server` to run the server with nodemon 
     * any changes made will restart the server automatically
-4. b) If you don't want to have the server restart automatically type `npm start` in the terminal to start the server 
-5. To run the test files type `npm test` in the terminal 
+5. If you don't want to have the server restart automatically type `npm start` in the terminal to start the server 
+6. To run the test files type `npm test` in the terminal 
 
 The server will be hosted on port 5000 unless otherwise specified. You can change the port number by creating a .env file and setting a variable PORT to the desired port number 
