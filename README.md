@@ -1,7 +1,7 @@
 # CS467_Capstone Backend
 Dating App for Animal Adoption
 
-This is the Backend Database/API for the project located at [Github](https://github.com/jennresado/CS467_Capstone)
+This is the Backend Database/API for the Frontend project located at [Github](https://github.com/jennresado/CS467_Capstone) and hosted on [Heroku](https://bring-me-home.herokuapp.com/)
 
 ## Database 
 The database is composed of 11 tables:
@@ -17,7 +17,7 @@ The database is composed of 11 tables:
 * Types
 * Animal_types
 
-The database is set up as a PostgreSQL and hosted on Heroku at (https://bring-me-home-backend.herokuapp.com/)
+The database is set up as a PostgreSQL and hosted on [Heroku] (https://bring-me-home-backend.herokuapp.com/)
 
 ## Endpoints 
 For more detailed documentation: ()
@@ -53,3 +53,12 @@ All changes made to an animal object (put, post, or del) must be done by an admi
 | DEL | `base_url/animals/:animal_id/:key/:key_id` | Deletes an attribute from an array (breeds, dispositions) | N/a | Jwt token that was provided on registration or log in|
 
 ## To Run Locally 
+1. Clone the repository into a folder on your local computer 
+2. Change directories (cd) into the cloned repository folder 
+3. In the terminal type `npm i` in order to download all needed dependencies
+4. In the terminal type `npm run server` to run the server with nodemon 
+    * any changes made will restart the server automatically
+4. b) If you don't want to have the server restart automatically type `npm start` in the terminal to start the server 
+5. To run the test files type `npm test` in the terminal 
+
+The server will be hosted on port 5000 unless otherwise specified. You can change the port number by creating a .env file and setting a variable PORT to the desired port number 
