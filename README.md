@@ -20,21 +20,23 @@ The database is composed of 11 tables:
 The database is set up as a PostgreSQL and hosted on Heroku at (https://bring-me-home-backend.herokuapp.com/)
 
 ## Endpoints 
-| URL | What it does | Required in Body | Required in Headers |
-|-----| ------------ | ---------------- | ------------------- |
-| `base_url/` | Checks if the server is working | N/a | N/a 
+| TYPE | URL | What it does | Required in Body | Required in Headers |
+|-----| -----|------------ | ---------------- | ------------------- |
+| GET | `base_url/` | Checks if the server is working | N/a | N/a 
 
 ### Auth Router
-| URL | What it does | Required in Body | Required in Headers |
-|-----| ------------ | ---------------- | ------------------- |
+| TYPE | URL | What it does | Required in Body | Required in Headers |
+|-----| -----|------------ | ---------------- | ------------------- |
+| POST | `base_url/auth/register` | Registers a new user in the database | username, password, first_name, last_name, email, admin | N/a | 
+| POST | `base_url/auth/login` | Logs in an already registered user | username, password | N/a 
 
 ### Users Router
-| URL | What it does | Required in Body | Required in Headers |
-|-----| ------------ | ---------------- | ------------------- |
+| TYPE | URL | What it does | Required in Body | Required in Headers |
+|-----| -----|------------ | ---------------- | ------------------- |
 
 ### Animals Router
-| URL | What it does | Required in Body | Required in Headers |
-|-----| ------------ | ---------------- | ------------------- |
+| TYPE | URL | What it does | Required in Body | Required in Headers |
+|-----| -----|------------ | ---------------- | ------------------- |
 
 
 ## To Run Locally 
