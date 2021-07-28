@@ -85,7 +85,6 @@ async function validateAdmin(req, res, next) {
     Users.getUserBy("username", username)
         .then((userArr) => {
             const user = userArr[0];
-            console.log(user)
             if (user) {
                 if (user.admin) {
                     next();
