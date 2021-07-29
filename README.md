@@ -17,7 +17,7 @@ The database is composed of 11 tables:
 * Types
 * Animal_types
 
-The database is set up as a PostgreSQL and hosted on [Heroku] (https://bring-me-home-backend.herokuapp.com/)
+The database is set up as a PostgreSQL and hosted on [Heroku](https://bring-me-home-backend.herokuapp.com/)
 
 ## Endpoints 
 For more detailed documentation: [Documentation](https://docs.google.com/document/d/1Qrlb6e5z1lbmc-2CgQSuipUSgBGWAhgu7mFuyRO1vh8/edit?usp=sharing)
